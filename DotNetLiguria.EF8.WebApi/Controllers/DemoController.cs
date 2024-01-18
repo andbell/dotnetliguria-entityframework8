@@ -140,7 +140,7 @@ public class DemoController : ControllerBase
     {
         if (fromRawSQL)
         {
-            var rawMovies = _context.Database.SqlQuery<MovieResponse>($"SELECT MovieId, Title, JSON_QUERY(Genres, '$[0]') as FirstGenre FROM Movies");
+            var rawMovies = _context.Database.SqlQuery<MovieResponse>($"SELECT MovieId, Title, JSON_VALUE(Genres, '$[0]') as FirstGenre FROM Movies");
             return Ok(rawMovies);
         }
 
