@@ -12,6 +12,9 @@ internal class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Id).HasColumnName("OrderId");
 
+        builder.ComplexProperty(builder => builder.ShippingAddress).IsRequired();
+        builder.ComplexProperty(builder => builder.BillingAddress).IsRequired();
+
         builder.HasOne(c => c.Customer).WithMany(c => c.Orders).HasForeignKey(c => c.CustomerId);
     }
 }

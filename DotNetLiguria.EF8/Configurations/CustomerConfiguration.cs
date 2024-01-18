@@ -11,5 +11,7 @@ internal class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.ToTable("Customers");
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Id).HasColumnName("CustomerId");
+
+        builder.ComplexProperty(c => c.Address).IsRequired();
     }
 }

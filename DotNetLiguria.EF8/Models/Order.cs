@@ -1,12 +1,17 @@
-﻿namespace DotNetLiguria.EF8.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DotNetLiguria.EF8.Models;
 
 public class Order
 {
-    public required int Id { get; set; }
+    public int Id { get; set; }
     public required int CustomerId { get; set; }
+    [Required]
     public required string Contents { get; set; }
-    public Address ShippingAddress { get; set; }
-    public Address BillingAddress { get; set; }
+    [Required]
+    public required Address ShippingAddress { get; set; }
+    [Required] 
+    public required Address BillingAddress { get; set; }
 
     public virtual Customer Customer { get; set; }
 }
