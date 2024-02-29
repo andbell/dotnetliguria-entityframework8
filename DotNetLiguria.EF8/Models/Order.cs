@@ -10,9 +10,9 @@ public class Order
 
     [Required]
     public required string Contents { get; set; }
-    [Required]
+
     public required Address ShippingAddress { get; set; }
-    [Required] 
+    
     public required Address BillingAddress { get; set; }
 
     public virtual Customer? Customer { get; set; }
