@@ -1,5 +1,4 @@
-﻿using DotNetLiguria.EF8.Migrations;
-using DotNetLiguria.EF8.Models;
+﻿using DotNetLiguria.EF8.Models;
 using DotNetLiguria.EF8.WebApi.RequestModels;
 using DotNetLiguria.EF8.WebApi.ResponseModels;
 using Microsoft.AspNetCore.Mvc;
@@ -12,14 +11,9 @@ namespace DotNetLiguria.EF8.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("[controller]")]
-public class DemoController : ControllerBase
+public class DemoController(EF8Context context) : ControllerBase
 {
-    private readonly EF8Context _context;
-
-    public DemoController(EF8Context context)
-    {
-        _context = context;
-    }
+    private readonly EF8Context _context = context;
 
     /// <summary>
     /// Get all customers
@@ -63,7 +57,7 @@ public class DemoController : ControllerBase
     /// <returns></returns>
     [HttpPut("customers/{customerId:int}")]
     [ProducesResponseType(typeof(List<Customer>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<Customer>> InsertCustomer(int customerId, [FromBody] CustomerRequest customer)
+    public async Task<ActionResult<Customer>> UpdateCustomer(int customerId, [FromBody] CustomerRequest customer)
     {
         var actualCustomer = await _context.Customers.SingleOrDefaultAsync(x => x.Id == customerId);
 
@@ -74,6 +68,7 @@ public class DemoController : ControllerBase
         actualCustomer.Name = customer.Name;
 
         await _context.SaveChangesAsync();
+
         return Ok(actualCustomer);
     }
 
@@ -112,7 +107,9 @@ public class DemoController : ControllerBase
             BillingAddress = newOrder.BillingAddress,
             ShippingAddress = newOrder.ShippingAddress,
             Contents = newOrder.Contents,
-            CustomerId = customerId
+            CustomerId = customerId,
+            OrderDate = DateOnly.FromDateTime(DateTime.Now),
+            ShippingTime = new TimeOnly(9, 30, 0, 0, 0)
         };
 
         _context.Add(order);
@@ -123,7 +120,8 @@ public class DemoController : ControllerBase
             Id = order.Id,
             ShippingAddress = order.ShippingAddress,
             Contents = order.Contents,
-            CustomerName = customer.Name
+            CustomerName = customer.Name,
+            OrderDate = order.OrderDate 
         };  
 
         return Ok(orderResponse);
@@ -147,6 +145,7 @@ public class DemoController : ControllerBase
         var movies = await _context.Movies
             .Where(x => x.Genres.Contains(genre))
             .ToListAsync();
+
         return Ok(movies);
     }
 
@@ -186,7 +185,10 @@ public class DemoController : ControllerBase
     [ProducesResponseType(typeof(List<Person>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<Person>>> GetAllPeopleByLevel(int level)
     {
-        var people = await _context.People.Where(x => x.Path.GetLevel() == level).ToListAsync();
+        var people = await _context.People
+            .Where(x => x.Path.GetLevel() == level)
+            .ToListAsync();
+
         return Ok(people);
     }
 
@@ -199,7 +201,8 @@ public class DemoController : ControllerBase
     public async Task<ActionResult<Person>> InsertPerson([FromBody] PersonRequest newPerson)
     {
         var person = new Person(HierarchyId.Parse(newPerson.Path), newPerson.Name);
-         _context.Add(person);
+        
+        _context.Add(person);
         await _context.SaveChangesAsync();
 
         return Ok(person);

@@ -5,6 +5,7 @@ using DotNetLiguria.EF8;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.SqlServer.Types;
 
@@ -13,9 +14,11 @@ using Microsoft.SqlServer.Types;
 namespace DotNetLiguria.EF8.Migrations
 {
     [DbContext(typeof(EF8Context))]
-    partial class EF8ContextModelSnapshot : ModelSnapshot
+    [Migration("20240229061626_DateInOrder2")]
+    partial class DateInOrder2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,7 +115,7 @@ namespace DotNetLiguria.EF8.Migrations
                     b.Property<DateOnly>("OrderDate")
                         .HasColumnType("date");
 
-                    b.Property<TimeOnly?>("ShippingTime")
+                    b.Property<TimeOnly?>("ShippingDate")
                         .HasColumnType("time");
 
                     b.ComplexProperty<Dictionary<string, object>>("BillingAddress", "DotNetLiguria.EF8.Models.Order.BillingAddress#Address", b1 =>
